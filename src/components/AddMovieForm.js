@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom';
 
 import axios from 'axios';
 
- export const EditMovieForm = (props) => {
+ export const AddMovieForm = (props) => {
   const navigate = useNavigate();
-  const { id } = useParams();
   const [movie, setMovie] = useState({
     title: "",
     director: "",
@@ -15,17 +14,6 @@ import axios from 'axios';
     description: ""
   });
 
-  const proxy = props.movies.filter((movie) => movie.id === id)
-
-  useEffect(() => {
-    setMovie(proxy[0] || {
-      title: "",
-      director: "",
-      genre: "",
-      metascore: 0,
-      description: ""
-    })
-  }, [props.movies])
 
   const handleChange = (e) => {
     setMovie({
@@ -37,14 +25,16 @@ import axios from 'axios';
      e.preventDefault();
      navigate('/movies')
    }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Make your put request here
     // On success, set the updated movies in state
     // and also navigate the app to the updated movie path
     console.log(movie)
-    axios.put(`http://localhost:9000/api/movies/${id}`, movie)
+    axios.post(`http://localhost:9000/api/movies`, movie)
       .then((res) => {
+        console.log(res.data)
         props.setMovies(res.data)
         navigate('/movies')
     })
@@ -57,20 +47,36 @@ import axios from 'axios';
       <div className="modal-content">
         <form onSubmit={handleSubmit}>
           <div className="modal-header">
-            <h4 className="modal-title">Editing <strong>{title}</strong></h4>
+            <h4 className="modal-title">Adding <strong>{title}</strong></h4>
           </div>
           <div className="modal-body">
             <div className="form-group">
               <label>Title</label>
-              <input value={title} onChange={handleChange} name="title" type="text" className="form-control" />
+                <input
+                    value={title}
+                    onChange={handleChange}
+                    name="title"
+                    type="text" className="form-control"
+                />
             </div>
             <div className="form-group">
               <label>Director</label>
-              <input value={director} onChange={handleChange} name="director" type="text" className="form-control" />
+                          <input
+                              value={director}
+                              onChange={handleChange}
+                              name="director"
+                              type="text"
+                              className="form-control"
+                          />
             </div>
             <div className="form-group">
               <label>Genre</label>
-              <input value={genre} onChange={handleChange} name="genre" type="text" className="form-control" />
+                          <input
+                              value={genre}
+                              onChange={handleChange}
+                              name="genre"
+                              type="text"
+                              className="form-control" />
             </div>
             <div className="form-group">
               <label>Metascore</label>
@@ -84,11 +90,11 @@ import axios from 'axios';
           </div>
           <div className="modal-footer">
             <input type="submit" className="btn btn-info" value="Save" />
-            <Link to={`/movies/1`}><input type="button" className="btn btn-default" value="Cancel" onClick={onCancel} /></Link>
+            <Link to={`/movies/1`}><input type="button" className="btn btn-default" value="Cancel" onClick={onCancel}/></Link>
           </div>
         </form>
       </div>
     </div>);
 }
 
-export default EditMovieForm;
+export default AddMovieForm;

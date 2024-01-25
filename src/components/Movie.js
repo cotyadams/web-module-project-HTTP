@@ -5,12 +5,22 @@ import axios from 'axios';
 
 const Movie = (props) => {
   const { addToFavorites } = props;
-
   const [movie, setMovie] = useState('');
 
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const deleteHandler = () => {
+    axios.delete(`http://localhost:9000/api/movies/${id}`)
+      .then((res) => {
+        props.setMovies(res.data)
+        navigate('/movies')
+    })
+  }
+  const clickHandler = () => {
+    if (!props.favoriteMovies.includes(movie)) {
+    props.setFavoriteMovies([...props.favoriteMovies, movie])
+    } 
+  }
   useEffect(() => {
     axios.get(`http://localhost:9000/api/movies/${id}`)
       .then(res => {
@@ -50,9 +60,16 @@ const Movie = (props) => {
             </section>
 
             <section>
-              <span className="m-2 btn btn-dark">Favorite</span>
+              <span className="m-2 btn btn-dark" onClick={clickHandler}>Favorite</span>
               <Link to={`/movies/edit/${movie.id}`} className="m-2 btn btn-success">Edit</Link>
-              <span className="delete"><input type="button" className="m-2 btn btn-danger" value="Delete" /></span>
+              <span className="delete">
+                <input
+                  type="button"
+                  className="m-2 btn btn-danger"
+                  value="Delete"
+                  onClick={deleteHandler}
+                />
+              </span>
             </section>
           </div>
         </div>
